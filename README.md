@@ -1,4 +1,4 @@
-# CS-230-Final_Project
+# CS 230 Final Project
 
 ## Overview
 Animal tracking is a necessary task for wildlife conservation and public safety. Traditional tracking methods include tagging individual animals within the broader population; however, this solution is limited to those specific individuals with trackers and, therefore, is difficult to scale. Computer vision has been used previously to identify different animals from trail cams (https://doi.org/10.1111/2041-210X.13099), but there has been limited work in developing a model which can specifically distinguish between closely related species.  
