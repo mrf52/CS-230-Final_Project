@@ -1,56 +1,9 @@
 import tensorflow as tf
-import tensorflow.keras.layers as tfl
-from preprocess import preprocess_input
-from preprocess import IMG_SIZE, IMG_SHAPE
-from preprocess import data_augmentation, data_augmenter
 
 
-def animal_model(image_shape=IMG_SIZE, data_augmentation=data_augmenter()):
-    ''' Define a tf.keras model for binary classification out of the MobileNetV2 model
-    Arguments:
-        image_shape -- Image width and height
-        data_augmentation -- data augmentation function
-    Returns:
-    Returns:
-        tf.keras.model
-    '''
-
-    input_shape = image_shape + (3,)
-    base_model = tf.keras.applications.MobileNetV2(input_shape=input_shape,
-                                                   include_top=False,
-                                                   weights='imagenet')
-
-    # freeze the base model by making it non trainable
-    base_model.trainable = False
-    # create the input layer (Same as the imageNetv2 input size)
-    inputs = tf.keras.Input(shape=input_shape)
-    # apply data augmentation to the inputs
-    x = data_augmentation(inputs)
-
-    # data preprocessing using the same weights the model was trained on
-    x = preprocess_input(x)
-
-    # set training to False to avoid keeping track of statistics in the batch norm layer
-    x = base_model(x, training=False)
-
-    # add new top layers
-    # use global avg pooling to summarize the info in each channel
-    x = tfl.GlobalAveragePooling2D()(x)
-    # include dropout with probability of 0.2 to avoid overfitting
-    x = tfl.Dropout(0.2)(x)
-    # use a prediction layer with 5 neurons (1 per class)
-    outputs = tfl.Dense(5)(x)
-    outputs = tfl.Activation('softmax')(outputs)
-
-    model = tf.keras.Model(inputs, outputs)
-
-    return model
-
-
-def train(train_dataset, validation_dataset, initial_epochs=5,
+def train(train_dataset, validation_dataset, model, initial_epochs=5,
           fine_tune_epochs=5, base_learning_rate=0.001):
     # compile the model
-    model = animal_model(IMG_SIZE, data_augmentation)
     model.compile(optimizer=tf.keras.optimizers.Adam(lr=base_learning_rate),
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])

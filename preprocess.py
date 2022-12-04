@@ -1,7 +1,5 @@
 import tensorflow as tf
-
-from tensorflow.keras.preprocessing import image_dataset_from_directory
-from tensorflow.keras.layers.experimental.preprocessing import RandomFlip, RandomRotation
+from tensorflow.keras.layers.experimental.preprocessing import RandomFlip
 
 
 def data_augmenter():
@@ -16,31 +14,13 @@ def data_augmenter():
     return data_augmentation
 
 
-directory = '/Users/gracec/tmp/lila/lila_downloads_by_species/caltech-unzipped/'
+def preprocess(train_dataset):
+    AUTOTUNE = tf.data.experimental.AUTOTUNE
+    train_dataset = train_dataset.prefetch(buffer_size=AUTOTUNE)
+    data_augmentation = data_augmenter()
+    preprocess_input = tf.keras.applications.mobilenet_v2.preprocess_input
+    return data_augmentation, preprocess_input
 
-BATCH_SIZE = 32
-IMG_SIZE = (160, 160)
-train_dataset = image_dataset_from_directory(directory,
-                                             shuffle=True,
-                                             batch_size=BATCH_SIZE,
-                                             image_size=IMG_SIZE,
-                                             validation_split=0.2,
-                                             subset='training',
-                                             seed=42,
-                                             label_mode='categorical')
-validation_dataset = image_dataset_from_directory(directory,
-                                                  shuffle=True,
-                                                  batch_size=BATCH_SIZE,
-                                                  image_size=IMG_SIZE,
-                                                  validation_split=0.2,
-                                                  subset='validation',
-                                                  seed=42,
-                                                  label_mode='categorical')
 
-AUTOTUNE = tf.data.experimental.AUTOTUNE
-train_dataset = train_dataset.prefetch(buffer_size=AUTOTUNE)
 
-augmenter = data_augmenter()
-data_augmentation = data_augmenter()
-preprocess_input = tf.keras.applications.mobilenet_v2.preprocess_input
-IMG_SHAPE = IMG_SIZE + (3,)
+
