@@ -31,7 +31,7 @@ def plot_confusion_matrix(dataset, model, name='confusion_matrix.png'):
     predicted_labels = model.predict(dataset).argmax(axis=1)
     confusion = tf.math.confusion_matrix(labels=gt_labels, predictions=predicted_labels, num_classes=5)
     plt.figure(figsize=(5, 5))
-    sns.heatmap(confusion, annot=True, fmt="d")
+    sns.heatmap(confusion, annot=True, fmt="d", cmap=sns.cm.rocket_r)
     plt.savefig(name)
 
 
