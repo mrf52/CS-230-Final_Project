@@ -26,7 +26,7 @@ def plot_accuracy_loss(acc, val_acc, loss, val_loss, name='accuracy_and_loss.png
 
 
 def plot_confusion_matrix(dataset, model, name='confusion_matrix.png'):
-    gt_labels = np.concatenate([x for x, y in dataset], axis=0)
+    gt_labels = np.concatenate([y for x, y in dataset], axis=0)
     gt_labels = gt_labels.argmax(axis=1)
     predicted_labels = model.predict(dataset).argmax(axis=1)
     confusion = tf.math.confusion_matrix(labels=gt_labels, predictions=predicted_labels, num_classes=5)
