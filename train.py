@@ -2,13 +2,17 @@ import tensorflow as tf
 
 
 def train(train_dataset, validation_dataset, model, initial_epochs=5,
-          fine_tune_epochs=5, base_learning_rate=0.001):
+          fine_tune_epochs=5, base_learning_rate=0.001, class_weights=None):
     # compile the model
     model.compile(optimizer=tf.keras.optimizers.Adam(lr=base_learning_rate),
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
     # train initial model
-    history = model.fit(train_dataset, validation_data=validation_dataset, epochs=initial_epochs)
+    if class_weights is None:
+        history = model.fit(train_dataset, validation_data=validation_dataset, epochs=initial_epochs)
+    else:
+        history = model.fit(train_dataset, validation_data=validation_dataset, epochs=initial_epochs,
+                            class_weight=class_weights)
     # save accuracy and loss
     acc = [0.] + history.history['accuracy']
     val_acc = [0.] + history.history['val_accuracy']
@@ -26,10 +30,17 @@ def train(train_dataset, validation_dataset, model, initial_epochs=5,
                   metrics=['accuracy'])
     # train fine-tuning epochs
     total_epochs = initial_epochs + fine_tune_epochs
-    history_fine = model.fit(train_dataset,
-                             epochs=total_epochs,
-                             initial_epoch=history.epoch[-1],
-                             validation_data=validation_dataset)
+    if class_weights is None:
+        history_fine = model.fit(train_dataset,
+                                 epochs=total_epochs,
+                                 initial_epoch=history.epoch[-1],
+                                 validation_data=validation_dataset)
+    else:
+        history_fine = model.fit(train_dataset,
+                                 epochs=total_epochs,
+                                 initial_epoch=history.epoch[-1],
+                                 validation_data=validation_dataset,
+                                 class_weight=class_weights)
     # save accuracy and loss
     acc += history_fine.history['accuracy']
     val_acc += history_fine.history['val_accuracy']
