@@ -3,6 +3,7 @@ import pathlib
 
 
 def get_label_counts(directory):
+    directory = pathlib.Path(directory)
     total_count = len(list(directory.glob('*/*.jpg')))
     labels_to_count = dict()
     labels_to_count[0] = len(list(directory.glob('bobcat/*.jpg')))
