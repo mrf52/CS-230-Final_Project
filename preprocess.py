@@ -3,11 +3,11 @@ from tensorflow.keras.layers.experimental.preprocessing import RandomFlip
 
 
 def data_augmenter():
-    '''
-    Create a Sequential model composed of 2 layers
-    Returns:
-        tf.keras.Sequential
-    '''
+    """
+    Creates a data augmentation function that applies a random horizontal flip.
+
+    :return: tf.keras.Sequential
+    """
     data_augmentation = tf.keras.Sequential()
     data_augmentation.add(RandomFlip('horizontal'))
 
@@ -15,6 +15,12 @@ def data_augmenter():
 
 
 def preprocess(train_dataset):
+    """
+    Preprocessing step of training.
+
+    :param train_dataset: Dataset of training samples
+    :return: Data augmentation function, preprocessing function
+    """
     AUTOTUNE = tf.data.experimental.AUTOTUNE
     train_dataset = train_dataset.prefetch(buffer_size=AUTOTUNE)
     data_augmentation = data_augmenter()
