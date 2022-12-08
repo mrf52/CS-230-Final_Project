@@ -9,6 +9,19 @@ import argparse
 
 def run(directory, test_directory, img_size, batch_size, initial_epochs, fine_tune_epochs, base_lr,
         validation_split, balance):
+    """
+    Executes dataset splitting, training, and evaluation pipeline of animal classifier.
+
+    :param directory: Directory of input images. Organized into subdirectories named by species.
+    :param test_directory: Directory of test input images. Organized into subdirectories named by species.
+    :param img_size: Size of input images. Default (160,160)
+    :param batch_size: Batch size. Default 32.
+    :param initial_epochs: Number of baseline model training epochs.
+    :param fine_tune_epochs: Number of fine-tuning model training epochs.
+    :param base_lr: Learning rate of baseline model.
+    :param validation_split: Fraction of dataset to reserve for validation.
+    :param balance: If True, balance dataset during training via oversampling.
+    """
     train_dataset, validation_dataset, test_dataset = generate_datasets(directory, test_directory,
                                                                         img_size=img_size, batch_size=batch_size,
                                                                         validation_split=validation_split)
