@@ -2,7 +2,7 @@ from train import train
 from generate_datasets import generate_datasets
 from preprocess import preprocess
 from model import animal_model
-from evaluate import plot_accuracy_loss, plot_confusion_matrix, evaluate_model
+from evaluate import plot_accuracy_loss, plot_confusion_matrix, plot_confusion_matrix_normalized
 from utils import get_label_counts, create_class_weight
 import argparse
 
@@ -40,9 +40,13 @@ def run(directory, test_directory, img_size, batch_size, initial_epochs, fine_tu
                                          class_weights=class_weights)
     print("Trained model")
     plot_accuracy_loss(acc, val_acc, loss, val_loss)
-    plot_confusion_matrix(test_dataset, model, name='confusion_matrix_test.png')  # confusion for test dataset
-    plot_confusion_matrix(train_dataset, model, name='confusion_matrix_train.png')  # confusion for train dataset
-    plot_confusion_matrix(validation_dataset, model, name='confusion_matrix_val.png')  # confusion for val dataset
+    # plot confusion matrices
+    plot_confusion_matrix(test_dataset, model, name='confusion_matrix_test.png')
+    plot_confusion_matrix(train_dataset, model, name='confusion_matrix_train.png')
+    plot_confusion_matrix(validation_dataset, model, name='confusion_matrix_val.png')
+    plot_confusion_matrix_normalized(test_dataset, model, name='confusion_matrix_norm_test.png')
+    plot_confusion_matrix_normalized(train_dataset, model, name='confusion_matrix_norm_train.png')
+    plot_confusion_matrix_normalized(validation_dataset, model, name='confusion_matrix_norm_val.png')
     print("Evaluated model")
 
 

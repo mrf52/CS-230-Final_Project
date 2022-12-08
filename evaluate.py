@@ -50,6 +50,28 @@ def plot_confusion_matrix(dataset, model, name='confusion_matrix.png'):
     plt.savefig(name)
 
 
+def plot_confusion_matrix_normalized(dataset, model, name='confusion_matrix_norm.png'):
+    """
+    Generates a normalized confusion matrix for a specified dataset.
+
+    :param dataset: tf.data.Dataset of labeled input images.
+    :param model: tf.keras.model to predict with
+    :param name: Name to save image file to.
+    """
+    gt_labels = np.concatenate([y for x, y in dataset], axis=0)
+    gt_labels = gt_labels.argmax(axis=1)
+    predicted_labels = model.predict(dataset).argmax(axis=1)
+    confusion = tf.math.confusion_matrix(labels=gt_labels, predictions=predicted_labels, num_classes=5)
+    confusion = confusion.numpy().astype(float)
+    row_total = np.sum(confusion, axis=1)
+    for row in range(5):
+        for col in range(5):
+            confusion[row, col] = confusion[row, col] / row_total[row]
+    plt.figure(figsize=(5, 5))
+    sns.heatmap(confusion, annot=True, cmap=sns.cm.rocket_r)
+    plt.savefig(name)
+
+
 def evaluate_model(dataset, model):
     """
     Evaluates the model on a specified dataset.
